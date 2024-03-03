@@ -20,8 +20,8 @@
         <element choice="3" label="Type" max_length="40" name="type" type="choice">
             <choice>
                 <element inactive_on_update="false" label="Thumbs" sequence="0" value="thumbs"/>
-                <element inactive_on_update="false" label="Stars" sequence="1" value="stars"/>
-                <element inactive_on_update="false" label="Smileys" sequence="2" value="smileys"/>
+                <element inactive_on_update="false" label="Smileys" sequence="1" value="smileys"/>
+                <element inactive_on_update="false" label="Stars" sequence="2" value="stars"/>
                 <element inactive_on_update="false" label="Score" sequence="3" value="score"/>
                 <element inactive_on_update="false" label="Text only" sequence="4" value="text_only"/>
             </choice>
