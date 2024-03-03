@@ -4,7 +4,15 @@
         <client_script><![CDATA[api.controller=function() {
   /* widget controller */
   var c = this;
-  
+	
+  c.thumbs,c.comments,c.smileys,c.stars;
+  c.contact_me = true;
+
+
+
+  c.checkValues = function(){
+	console.log([c.thumbs,c.smileys,c.stars,c.comments,c.contact_me]);
+  }
 };]]></client_script>
         <controller_as>c</controller_as>
         <css>.feedback-popup {&#13;
@@ -15,7 +23,19 @@
 	    background-color: white;&#13;
     }&#13;
   }&#13;
-}</css>
+}&#13;
+&#13;
+&#13;
+.radio-item{&#13;
+display: none !important;&#13;
+}&#13;
+.radio-label {&#13;
+opacity: 0.3;&#13;
+}&#13;
+.radio-item:checked + label,.include-star {&#13;
+opacity: 1;&#13;
+}&#13;
+</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -34,6 +54,20 @@
         <script><![CDATA[(function() {
   /* populate the 'data' object */
   /* e.g., data.table = $sp.getValue('table'); */
+  gs.info(JSON.stringify(input));
+if(input && input.modal){
+	data.options = input;
+} else {
+	data.options = options;
+}
+
+data.smileys = [
+	{value:0,icon:'fa-face-sad-cry'},
+	{value:1,icon:'fa-face-frown'},
+	{value:2,icon:'fa-face-meh'},
+	{value:3,icon:'fa-face-smile'},
+	{value:4,icon:'fa-face-grin-hearts'},
+];
 
 })();]]></script>
         <servicenow>false</servicenow>
@@ -41,16 +75,89 @@
         <sys_created_by>aaron.brunet</sys_created_by>
         <sys_created_on>2024-03-02 16:31:08</sys_created_on>
         <sys_id>6c28c10887300e104c1fc99d0ebb354a</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>42</sys_mod_count>
         <sys_name>Feedback body</sys_name>
         <sys_package display_value="Feedbacker" source="x_snc_feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_package>
         <sys_policy/>
         <sys_scope display_value="Feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_scope>
         <sys_update_name>sp_widget_6c28c10887300e104c1fc99d0ebb354a</sys_update_name>
         <sys_updated_by>aaron.brunet</sys_updated_by>
-        <sys_updated_on>2024-03-02 16:40:53</sys_updated_on>
+        <sys_updated_on>2024-03-03 18:43:02</sys_updated_on>
         <template><![CDATA[<div class="feedback-popup container">
-  <p class="feedback-popup content">Hello world!</p>
+  <p class="feedback-popup content">Your feedback is important to us!</p>
+  <p class="feedback-popup content">How was your experience on this page?</p>  
+  
+  <div id="thumbs" ng-if="data.options.feedback_type == 'thumbs'">
+  	<input type="radio" class="radio-item" value="thumbs_up" name="thumbs" id="thumbs_up" ng-model="c.thumbs">
+    	<label class="radio-label" for="thumbs_up"><i class="fa-solid fa-thumbs-up"></i></label>
+    <input type="radio" class="radio-item" value="thumbs_down" name="thumbs" id="thumbs_down" ng-model="c.thumbs">
+    	<label class="radio-label" for="thumbs_down"><i class="fa-solid fa-thumbs-down"></i></label>
+    <div ng-if="c.thumbs == 'thumbs_up'">
+      <p>Glad to hear it!</p>
+    </div>
+    <div ng-if="c.thumbs == 'thumbs_down'">
+      <p>Sorry to hear that!</p>
+    </div>
+  </div>
+  
+  <div id="smileys" ng-if="data.smileys && data.smileys.length > 0">
+    <span ng-repeat="s in data.smileys">
+  	<input  type="radio" class="radio-item" value="{{s.value}}" name="smileys" id="smileys-{{s.value}}" ng-model="c.smileys">
+    	<label class="radio-label" for="smileys-{{s.value}}">
+			<i class="fa-solid {{s.icon}}"></i>
+	    </label>
+    </span>
+    
+    <!--
+    <input type="radio" class="radio-item" value="1" name="smileys" id="smileys-1" ng-model="c.smileys">
+    	<label class="radio-label" for="smileys-1">
+			<i class="fa-solid fa-face-frown"></i>
+	    </label>
+    <input type="radio" class="radio-item" value="2" name="smileys" id="smileys-2" ng-model="c.smileys">
+    	<label class="radio-label" for="smileys-2">
+          <i class="fa-solid fa-face-meh"></i>
+	    </label>
+    <input type="radio" class="radio-item" value="3" name="smileys" id="smileys-3" ng-model="c.smileys">
+    	<label class="radio-label" for="smileys-3">
+          <i class="fa-solid fa-face-smile"></i>
+	    </label>
+    <input type="radio" class="radio-item" value="4" name="smileys" id="smileys-4" ng-model="c.smileys">
+    	<label class="radio-label" for="smileys-4">
+          <i class="fa-solid fa-face-grin-hearts"></i>
+	    </label>
+-->
+    <div ng-if="c.smileys == 4">
+      <p>Woohoo!</p>
+    </div>
+    <div ng-if="c.smileys == 3">
+      <p>Glad to hear it!</p>
+    </div>
+    <div ng-if="c.smileys <= 2">
+      <p>Sorry to hear that!</p>
+    </div>
+  </div>
+  
+  <div id="stars">
+    <span ng-repeat="star in [1,2,3,4,5]">
+      <input  type="radio" class="radio-item" value="{{star}}" name="stars" id="stars-{{star}}" ng-model="c.stars">
+    	<label class="radio-label {{star <= c.stars && 'include-star'}}" for="stars-{{star}}">
+			<i class="fa-solid fa-star"></i>
+	    </label>
+    </span>
+  </div>
+  
+  <div id="comments" ng-if="data.options.allow_comments">
+    <textarea ng-model="c.comments" maxlength=500></textarea>
+    <p>{{c.comments.length || 0}}/500 characters remaining</p>
+  </div>
+  
+  <div id="allow_contact">
+  	<input type="checkbox" ng-model="c.contact_me" id="contact_me"/> 
+    <label for="contact_me">I want to be contacted about this feedback</label>
+  </div>
+  
+  <button ng-click="c.checkValues()">Check</button>
+  
 </div>]]></template>
     </sp_widget>
 </record_update>

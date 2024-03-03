@@ -5,25 +5,20 @@
   /* widget controller */
   var c = this;
   c.data.allow_modal = true;
-  c.data.options = {buttons:[]};
 
-  c.openModal = function(options){
-	    options.buttons = [({
-					label: 'Send feedback',
-					primary: true,
-					url: '',
-					custom_parameter: 'Hello world'
-		})];
+  c.openModal = function(_options){
+	  _options.modal = true;  
 	  if(c.data.allow_modal){
-		options.display = 'options-display';
-		options.type = 'text-only';
+		//options.display = 'options-display';
+		//options.type = 'text-only';
 		spModal.open({
 			title: c.data.modal_title || 'Leave Feedback',
 			widget: 'feedback-body',
-			widgetInput: options,
-			buttons: options.buttons
-		}).then(function(btn){
-			console.log(btn);
+			widgetInput: _options,
+			buttons: _options.buttons,
+			size: _options.size
+		}).then(function(response){
+			console.log(response);
 		})
 	  }
   };
@@ -33,31 +28,36 @@
         <css>.feedback-widget {&#13;
   &amp;.feedback-container {&#13;
     &amp;.outer {&#13;
-    &#13;
-    &#13;
-    border: 1px solid grey;&#13;
-    border-radius: 1rem;&#13;
-    background-color: white;&#13;
+      background-color: white;&#13;
+      border: 1px solid grey;&#13;
+      border-radius: 1rem;&#13;
+      margin: 1rem;&#13;
     }&#13;
 	&#13;
-    &amp;.fixed {&#13;
+    &amp;.floating {&#13;
       position: fixed;&#13;
     }&#13;
     &amp;.inline {&#13;
       position: relative;&#13;
     }&#13;
     &amp;.top {&#13;
-    	top: 0 !important;&#13;
+      top: 0 !important;&#13;
     }&#13;
     &amp;.bottom {&#13;
-    	bottom: 0 !important;&#13;
+      bottom: 0 !important;&#13;
     }&#13;
     &amp;.right {&#13;
-    	right: 0 !important;&#13;
+      right: 0 !important;&#13;
     }&#13;
     &amp;.left {&#13;
-    	left: 0 !important;&#13;
+      left: 0 !important;&#13;
     }&#13;
+  }&#13;
+  .feedback-button {&#13;
+  	padding: .5rem 1rem;&#13;
+  }&#13;
+  .feedback-content {&#13;
+  	margin: 0;&#13;
   }&#13;
 }&#13;
 &#13;
@@ -74,30 +74,39 @@
   
 }]]></link>
         <name>Feedback</name>
-        <option_schema>[{"name":"display","section":"Presentation","default_value":"floating","label":"Display type","type":"choice","choices":[{"label":"floating","value":"floating"},{"label":"inline","value":"inline"}]},{"hint":"If Display type is 'Floating', choose widget location","name":"display_location","section":"Presentation","default_value":"bottom_right","label":"Display location","type":"choice","choices":[{"label":"top_left","value":"top_left"},{"label":"top_right","value":"top_right"},{"label":"bottom_left","value":"bottom_left"},{"label":"bottom_right","value":"bottom_right"}]},{"name":"feedback_type","section":"Behavior","default_value":"thumbs","label":"Feedback type","type":"choice","choices":[{"label":"thumbs","value":"thumbs"},{"label":"stars","value":"stars"},{"label":"smileys","value":"smileys"},{"label":"score","value":"score"},{"label":"text_only","value":"text_only"}]},{"name":"allow_comments","section":"Data","default_value":"true","label":"Allow comments","type":"boolean"},{"name":"show_contact_me","section":"Behavior","default_value":"false","label":"Show Contact Me option","type":"boolean"},{"name":"size","section":"Presentation","default_value":"small","label":"Widget size","type":"choice","choices":[{"label":"small","value":"small"},{"label":"medium","value":"medium"},{"label":"large","value":"large"},{"label":"fullscreen","value":"fullscreen"}]},{"name":"widget_popup_size","section":"Presentation","default_value":"medium","label":"Widget popup size","type":"choice","choices":[{"label":"small","value":"small"},{"label":"medium","value":"medium"},{"label":"large","value":"large"},{"label":"fullscreen","value":"fullscreen"}]},{"name":"widget_label","section":"Presentation","default_value":"Leave feedback","label":"Widget label","type":"string"}]</option_schema>
+        <option_schema>[{"name":"display","section":"Presentation","default_value":"floating","label":"Display position","type":"choice","choices":[{"label":"floating","value":"floating"},{"label":"inline","value":"inline"}]},{"hint":"If Display type is 'Floating', choose widget location","name":"display_location","section":"Presentation","default_value":"bottom_right","label":"Display location","type":"choice","choices":[{"label":"top_left","value":"top_left"},{"label":"top_right","value":"top_right"},{"label":"bottom_left","value":"bottom_left"},{"label":"bottom_right","value":"bottom_right"}]},{"name":"feedback_type","section":"Behavior","default_value":"thumbs","label":"Feedback type","type":"choice","choices":[{"label":"thumbs","value":"thumbs"},{"label":"stars","value":"stars"},{"label":"smileys","value":"smileys"},{"label":"score","value":"score"},{"label":"text_only","value":"text_only"}]},{"name":"allow_comments","section":"Data","default_value":"true","label":"Allow comments","type":"boolean"},{"name":"show_contact_me","section":"Behavior","default_value":"false","label":"Show Contact Me option","type":"boolean"},{"name":"size","section":"Presentation","default_value":"sm","label":"Widget size","type":"choice","choices":[{"label":"sm","value":"sm"},{"label":"lg","value":"lg"}]},{"name":"widget_popup_size","section":"Presentation","default_value":"medium","label":"Widget popup size","type":"choice","choices":[{"label":"small","value":"small"},{"label":"medium","value":"medium"},{"label":"large","value":"large"},{"label":"fullscreen","value":"fullscreen"}]},{"name":"widget_label","section":"Presentation","default_value":"Leave feedback","label":"Widget label","type":"string"},{"name":"button_type","section":"Presentation","default_value":"text","label":"Button type","type":"choice","choices":[{"label":"text","value":"text"},{"label":"icon","value":"icon"}]}]</option_schema>
         <public>true</public>
         <roles/>
         <script><![CDATA[(function() {
   /* populate the 'data' object */
   /* e.g., data.table = $sp.getValue('table'); */
-
+  data.options = options;
+	data.options.buttons = [({
+					label: 'Send feedback',
+					primary: true,
+					url: '',
+					custom_parameter: 'Hello world'
+		})];
+  data.display_location = options.display_location.replace('_',' ');
+  data.display = options.display;
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>aaron.brunet</sys_created_by>
         <sys_created_on>2024-03-02 15:59:01</sys_created_on>
         <sys_id>5ce0018087300e104c1fc99d0ebb357f</sys_id>
-        <sys_mod_count>23</sys_mod_count>
+        <sys_mod_count>42</sys_mod_count>
         <sys_name>Feedback</sys_name>
         <sys_package display_value="Feedbacker" source="x_snc_feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_package>
         <sys_policy/>
         <sys_scope display_value="Feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_scope>
         <sys_update_name>sp_widget_5ce0018087300e104c1fc99d0ebb357f</sys_update_name>
         <sys_updated_by>aaron.brunet</sys_updated_by>
-        <sys_updated_on>2024-03-02 16:45:22</sys_updated_on>
-        <template><![CDATA[<div class="feedback-widget feedback-container fixed bottom right outer">
-  <div class="feedback-widget feedback-container inner"  ng-click="c.openModal(c.data.options)">
-  	<p class="feedback-widget content">Leave feedback</p>
+        <sys_updated_on>2024-03-03 17:48:52</sys_updated_on>
+        <template><![CDATA[<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<div class="feedback-widget feedback-container floating {{c.data.display}} {{c.data.display_location}} outer">
+  <div class="feedback-widget feedback-container inner"  ng-click="c.openModal(data.options)">
+  	<p class="feedback-widget feedback-button feedback-content">Leave feedback</p>
   </div>
 </div>
 ]]></template>

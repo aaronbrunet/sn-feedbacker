@@ -9,7 +9,7 @@
             </choice>
         </element>
         <element label="Contact preference other" max_length="1000" name="contact_preference_other" type="string"/>
-        <element label="Details" max_length="5000" name="details" type="string"/>
+        <element label="Details" max_length="500" name="details" type="string"/>
         <element label="Edited" max_length="255" name="edited" type="boolean"/>
         <element default="javascript:new GlideDateTime()" label="Last edited" max_length="255" name="last_edited" type="glide_date_time"/>
         <element label="Location" max_length="5000" name="location" type="string"/>
