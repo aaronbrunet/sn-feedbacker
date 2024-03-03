@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller=function() {
+        <client_script><![CDATA[api.controller=function($window) {
   /* widget controller */
   var c = this;
 	
@@ -60,32 +60,52 @@
   c.getScore = function(_type,_score){
 	console.log([_type,_score,c.normalizeScore(_type,_score)]);
   };
+
+  c.data.page = $window.location.href;
+
+  console.log([c.data.page,c.data.me]);
 };]]></client_script>
         <controller_as>c</controller_as>
-        <css>.feedback-popup {&#13;
+        <css>.feedback-popup-container {&#13;
+    margin: 1rem;&#13;
+	padding: 1rem;&#13;
   &#13;
-  &amp;.container {&#13;
     &amp;.outer {&#13;
     	border: 1px solid grey;&#13;
 	    background-color: white;&#13;
     }&#13;
+    .feedback-section {&#13;
+    display: flex;&#13;
+    flex-direction: column;&#13;
+    justify-items: center;&#13;
   }&#13;
+&#13;
+  .feedback-options {&#13;
+      display: flex;&#13;
+      align-self: center;&#13;
+      flex-direction: row;&#13;
+  }&#13;
+&#13;
+  .radio-item{&#13;
+      display: none !important;&#13;
+  }&#13;
+  .radio-label {&#13;
+      opacity: 0.3;&#13;
+      font-size: xxx-large;&#13;
+      padding: 0 1rem;&#13;
+  }&#13;
+  .radio-item:checked + label,.include-star {&#13;
+      opacity: 1;&#13;
+  }&#13;
+  &#13;
+  textarea {&#13;
+  	max-width: 100%;&#13;
+  }&#13;
+  &#13;
+  &#13;
 }&#13;
 &#13;
-&#13;
-.radio-item{&#13;
-display: none !important;&#13;
-}&#13;
-.radio-label {&#13;
-opacity: 0.3;&#13;
-}&#13;
-.radio-item:checked + label,.include-star {&#13;
-opacity: 1;&#13;
-}&#13;
-&#13;
-#score-slider {&#13;
-	width: max-content;&#13;
-}</css>
+</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -102,22 +122,23 @@ opacity: 1;&#13;
         <public>true</public>
         <roles/>
         <script><![CDATA[(function() {
-  /* populate the 'data' object */
-  /* e.g., data.table = $sp.getValue('table'); */
-  gs.info(JSON.stringify(input));
-if(input && input.modal){
-	data.options = input;
-} else {
-	data.options = options;
-}
+	gs.info(JSON.stringify(input));
+	if(input && input.modal){
+		data.options = input;
+	} else {
+		data.options = options;
+	}
 
-data.smileys = [
-	{value:0,icon:'fa-face-sad-cry'},
-	{value:1,icon:'fa-face-frown'},
-	{value:2,icon:'fa-face-meh'},
-	{value:3,icon:'fa-face-smile'},
-	{value:4,icon:'fa-face-grin-hearts'},
-];
+	data.smileys = [
+		{value:0,icon:'fa-face-sad-cry'},
+		{value:1,icon:'fa-face-frown'},
+		{value:2,icon:'fa-face-meh'},
+		{value:3,icon:'fa-face-smile'},
+		{value:4,icon:'fa-face-grin-hearts'},
+	];
+
+	data.me = gs.getUserID();
+	
 
 })();]]></script>
         <servicenow>false</servicenow>
@@ -125,41 +146,42 @@ data.smileys = [
         <sys_created_by>aaron.brunet</sys_created_by>
         <sys_created_on>2024-03-02 16:31:08</sys_created_on>
         <sys_id>6c28c10887300e104c1fc99d0ebb354a</sys_id>
-        <sys_mod_count>55</sys_mod_count>
+        <sys_mod_count>69</sys_mod_count>
         <sys_name>Feedback body</sys_name>
         <sys_package display_value="Feedbacker" source="x_snc_feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_package>
         <sys_policy/>
         <sys_scope display_value="Feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_scope>
         <sys_update_name>sp_widget_6c28c10887300e104c1fc99d0ebb354a</sys_update_name>
         <sys_updated_by>aaron.brunet</sys_updated_by>
-        <sys_updated_on>2024-03-03 19:13:48</sys_updated_on>
-        <template><![CDATA[<div class="feedback-popup container">
+        <sys_updated_on>2024-03-03 19:39:54</sys_updated_on>
+        <template><![CDATA[<div class="feedback-popup-container">
   <p class="feedback-popup content">Your feedback is important to us!</p>
   <p class="feedback-popup content">How was your experience on this page?</p>  
   
-  <div id="thumbs" ng-if="data.options.feedback_type == 'thumbs'">
-    <input type="radio" class="radio-item" value="thumbs_down" name="thumbs" id="thumbs_down" ng-model="c.thumbs">
-    	<label class="radio-label" for="thumbs_down"><i class="fa-solid fa-thumbs-down"></i></label>
-    <input type="radio" class="radio-item" value="thumbs_up" name="thumbs" id="thumbs_up" ng-model="c.thumbs">
-    	<label class="radio-label" for="thumbs_up"><i class="fa-solid fa-thumbs-up"></i></label>
-
+  <div id="thumbs" class="feedback-section" ng-if="data.options.feedback_type == 'thumbs'">
+    <div class="feedback-options">
+      <input type="radio" class="radio-item" value="thumbs_down" name="thumbs" id="thumbs_down" ng-model="c.thumbs">
+          <label class="radio-label" for="thumbs_down"><i class="fa-solid fa-thumbs-down"></i></label>
+      <input type="radio" class="radio-item" value="thumbs_up" name="thumbs" id="thumbs_up" ng-model="c.thumbs">
+          <label class="radio-label" for="thumbs_up"><i class="fa-solid fa-thumbs-up"></i></label>
+    </div>
     <div ng-if="c.thumbs == 'thumbs_up'">
       <p>Glad to hear it!</p>
     </div>
     <div ng-if="c.thumbs == 'thumbs_down'">
       <p>Sorry to hear that!</p>
     </div>
-      <button ng-click="c.getScore('thumbs',c.thumbs)">Get Score</button>
   </div>
   
-  <div id="smileys" ng-if="data.smileys && data.smileys.length > 0">
-    <span ng-repeat="s in data.smileys">
-  	<input  type="radio" class="radio-item" value="{{s.value}}" name="smileys" id="smileys-{{s.value}}" ng-model="c.smileys">
-    	<label class="radio-label" for="smileys-{{s.value}}">
-			<i class="fa-solid {{s.icon}}"></i>
-	    </label>
-    </span>
-    
+  <div id="smileys" class="feedback-section" ng-if="data.smileys && data.smileys.length > 0">
+    <div class="feedback-options">
+      <span ng-repeat="s in data.smileys">
+        <input  type="radio" class="radio-item" value="{{s.value}}" name="smileys" id="smileys-{{s.value}}" ng-model="c.smileys">
+            <label class="radio-label" for="smileys-{{s.value}}">
+                <i class="fa-solid {{s.icon}}"></i>
+            </label>
+      </span>
+    </div>
     <div ng-if="c.smileys == 4">
       <p>Woohoo!</p>
     </div>
@@ -169,43 +191,40 @@ data.smileys = [
     <div ng-if="c.smileys <= 2">
       <p>Sorry to hear that!</p>
     </div>
-    
-    <button ng-click="c.getScore('smileys',c.smileys)">Get Score</button>
   </div>
   
-  <div id="stars">
-    <span ng-repeat="star in [1,2,3,4,5]">
-      <input  type="radio" class="radio-item" value="{{star}}" name="stars" id="stars-{{star}}" ng-model="c.stars">
-    	<label class="radio-label {{star <= c.stars && 'include-star'}}" for="stars-{{star}}">
-			<i class="fa-solid fa-star"></i>
-	    </label>
-    </span>
+  <div id="stars" class="feedback-section">
+    <div class="feedback-options">
+      <span ng-repeat="star in [1,2,3,4,5]">
+        <input  type="radio" class="radio-item" value="{{star}}" name="stars" id="stars-{{star}}" ng-model="c.stars">
+          <label class="radio-label {{star <= c.stars && 'include-star'}}" for="stars-{{star}}">
+              <i class="fa-solid fa-star"></i>
+          </label>
+      </span>
+    </div>
     <div ng-if="c.stars >= 3">
       <p>Glad to hear it!</p>
     </div>
     <div ng-if="c.stars < 3">
       <p>Sorry to hear that!</p>
     </div>
-          <button ng-click="c.getScore('stars',c.stars)">Get Score</button>
   </div>
   
-  <div id="score">
+  <div id="score" class="feedback-section">
     <input type="range" value="score" name="score" id="score-slider" min=0 max=100 step=1 ng-model="c.score">
     	<label class="" for="score">{{c.score || 0}}% ({{c.getGrade(c.score)}})</label>
-    
-
     <div ng-if="c.score >= 70">
       <p>Glad to hear it!</p>
     </div>
     <div ng-if="c.score < 70">
       <p>Sorry to hear that!</p>
     </div>
-      <button ng-click="c.getScore('score',c.score)">Get Score</button>
   </div>
   
-  <div id="comments" ng-if="data.options.allow_comments">
-    <textarea ng-model="c.comments" maxlength=500></textarea>
-    <p>{{c.comments.length || 0}}/500 characters remaining</p>
+  <div id="comments" class="feedback-section" ng-if="data.options.allow_comments">
+    <label for="comments">Tell us more!</label>
+    <textarea name="comments" ng-model="c.comments" maxlength=500></textarea>
+    <p ng-if="c.comments.length > 0">{{500 - c.comments.length || 500}}/500 characters remaining</p>
   </div>
   
   <div id="allow_contact">
