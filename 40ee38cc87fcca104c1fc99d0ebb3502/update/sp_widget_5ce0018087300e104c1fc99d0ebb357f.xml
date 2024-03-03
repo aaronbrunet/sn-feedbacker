@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function(spModal) {
+  /* widget controller */
+  var c = this;
+  c.data.allow_modal = true;
+  c.data.options = {buttons:[]};
+
+  c.openModal = function(options){
+	    options.buttons = [({
+					label: 'Send feedback',
+					primary: true,
+					url: '',
+					custom_parameter: 'Hello world'
+		})];
+	  if(c.data.allow_modal){
+		options.display = 'options-display';
+		options.type = 'text-only';
+		spModal.open({
+			title: c.data.modal_title || 'Leave Feedback',
+			widget: 'feedback-body',
+			widgetInput: options,
+			buttons: options.buttons
+		}).then(function(btn){
+			console.log(btn);
+		})
+	  }
+  };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.feedback-widget {&#13;
+  &amp;.feedback-container {&#13;
+    &amp;.outer {&#13;
+    &#13;
+    &#13;
+    border: 1px solid grey;&#13;
+    border-radius: 1rem;&#13;
+    background-color: white;&#13;
+    }&#13;
+	&#13;
+    &amp;.fixed {&#13;
+      position: fixed;&#13;
+    }&#13;
+    &amp;.inline {&#13;
+      position: relative;&#13;
+    }&#13;
+    &amp;.top {&#13;
+    	top: 0 !important;&#13;
+    }&#13;
+    &amp;.bottom {&#13;
+    	bottom: 0 !important;&#13;
+    }&#13;
+    &amp;.right {&#13;
+    	right: 0 !important;&#13;
+    }&#13;
+    &amp;.left {&#13;
+    	left: 0 !important;&#13;
+    }&#13;
+  }&#13;
+}&#13;
+&#13;
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>feedback</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {
+  
+}]]></link>
+        <name>Feedback</name>
+        <option_schema>[{"name":"display","section":"Presentation","default_value":"floating","label":"Display type","type":"choice","choices":[{"label":"floating","value":"floating"},{"label":"inline","value":"inline"}]},{"hint":"If Display type is 'Floating', choose widget location","name":"display_location","section":"Presentation","default_value":"bottom_right","label":"Display location","type":"choice","choices":[{"label":"top_left","value":"top_left"},{"label":"top_right","value":"top_right"},{"label":"bottom_left","value":"bottom_left"},{"label":"bottom_right","value":"bottom_right"}]},{"name":"feedback_type","section":"Behavior","default_value":"thumbs","label":"Feedback type","type":"choice","choices":[{"label":"thumbs","value":"thumbs"},{"label":"stars","value":"stars"},{"label":"smileys","value":"smileys"},{"label":"score","value":"score"},{"label":"text_only","value":"text_only"}]},{"name":"allow_comments","section":"Data","default_value":"true","label":"Allow comments","type":"boolean"},{"name":"show_contact_me","section":"Behavior","default_value":"false","label":"Show Contact Me option","type":"boolean"},{"name":"size","section":"Presentation","default_value":"small","label":"Widget size","type":"choice","choices":[{"label":"small","value":"small"},{"label":"medium","value":"medium"},{"label":"large","value":"large"},{"label":"fullscreen","value":"fullscreen"}]},{"name":"widget_popup_size","section":"Presentation","default_value":"medium","label":"Widget popup size","type":"choice","choices":[{"label":"small","value":"small"},{"label":"medium","value":"medium"},{"label":"large","value":"large"},{"label":"fullscreen","value":"fullscreen"}]},{"name":"widget_label","section":"Presentation","default_value":"Leave feedback","label":"Widget label","type":"string"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aaron.brunet</sys_created_by>
+        <sys_created_on>2024-03-02 15:59:01</sys_created_on>
+        <sys_id>5ce0018087300e104c1fc99d0ebb357f</sys_id>
+        <sys_mod_count>23</sys_mod_count>
+        <sys_name>Feedback</sys_name>
+        <sys_package display_value="Feedbacker" source="x_snc_feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_scope>
+        <sys_update_name>sp_widget_5ce0018087300e104c1fc99d0ebb357f</sys_update_name>
+        <sys_updated_by>aaron.brunet</sys_updated_by>
+        <sys_updated_on>2024-03-02 16:45:22</sys_updated_on>
+        <template><![CDATA[<div class="feedback-widget feedback-container fixed bottom right outer">
+  <div class="feedback-widget feedback-container inner"  ng-click="c.openModal(c.data.options)">
+  	<p class="feedback-widget content">Leave feedback</p>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

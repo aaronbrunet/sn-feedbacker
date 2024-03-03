@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="555ff40087300e104c1fc99d0ebb35be" label="Feedback" max_length="40" name="x_snc_feedbacker_feedback" type="collection">
+        <element label="Contact me" max_length="40" name="contact_me" type="boolean"/>
+        <element choice="3" label="Contact preference" max_length="40" name="contact_preference" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Email" sequence="0" value="email"/>
+                <element inactive_on_update="false" label="Phone" sequence="1" value="phone"/>
+                <element inactive_on_update="false" label="Other" sequence="2" value="other"/>
+            </choice>
+        </element>
+        <element label="Contact preference other" max_length="1000" name="contact_preference_other" type="string"/>
+        <element label="Details" max_length="5000" name="details" type="string"/>
+        <element label="Edited" max_length="255" name="edited" type="boolean"/>
+        <element default="javascript:new GlideDateTime()" label="Last edited" max_length="255" name="last_edited" type="glide_date_time"/>
+        <element label="Location" max_length="5000" name="location" type="string"/>
+        <element attributes="edge_encryption_enabled=true" default="javascript:global.getNextObjNumberPadded();" display="true" label="Number" max_length="40" name="number" type="string"/>
+        <element label="Rating" max_length="500" name="rating" type="string"/>
+        <element label="Score" max_length="40" name="score" type="integer"/>
+        <element default="javascript:current.getTableName();" label="Class" max_length="80" name="sys_class_name" type="sys_class_name"/>
+        <element choice="3" label="Type" max_length="40" name="type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Thumbs" sequence="0" value="thumbs"/>
+                <element inactive_on_update="false" label="Stars" sequence="1" value="stars"/>
+                <element inactive_on_update="false" label="Smileys" sequence="2" value="smileys"/>
+                <element inactive_on_update="false" label="Score" sequence="3" value="score"/>
+                <element inactive_on_update="false" label="Text only" sequence="4" value="text_only"/>
+            </choice>
+        </element>
+        <element label="User" max_length="32" name="user" reference="sys_user" type="reference"/>
+        <index name="index">
+            <element name="sys_class_name"/>
+        </index>
+        <index name="index2">
+            <element name="user"/>
+        </index>
+    </element>
+</database>
