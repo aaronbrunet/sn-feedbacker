@@ -4,12 +4,14 @@
         <client_script><![CDATA[api.controller=function($window,$scope,$timeout) {
   /* widget controller */
   var c = this;
+
+  //init values
   c.thumbs,c.comments,c.smileys,c.stars;
   c.score = 100;
   c.contact_me = true;
-
   c.raw_score = 0;
   
+  //return score/100
   c.normalizeScore = function(_type,_score){
 	var score;
 	switch(_type){
@@ -30,39 +32,51 @@
 	return score;
   };
 
+  //letter grade for slider
   c.getGrade = function(_score){
-	if(_score < 60){
-		return 'F';
-	}
-	if(_score < 70){
-		return 'D';
-	}
-	if(_score < 80) {
-		return 'C';
-	}
-	if(_score < 90) {
-		return 'B';
-	}
-	if(_score < 95){
-		return 'A';
-	}
-	if(_score <= '100'){
-		return 'A+';
-	}
+	if(_score < 60){return 'F';}
+	if(_score < 70){return 'D';}
+	if(_score < 80) {return 'C';}
+	if(_score < 90) {return 'B';}
+	if(_score < 95){return 'A';}
+	if(_score <= '100'){return 'A+';}
 	return 'F';
-  }
-
-  c.checkValues = function(){
-	console.log([c.thumbs,c.smileys,c.stars,c.comments,c.contact_me]);
-	console.log($scope);
   };
 
+  //test func
+  c.checkValues = function(){
+	//c.data.feedback_response = c.buildResponse();
+	//console.log([c.thumbs,c.smileys,c.stars,c.comments,c.contact_me]);
+	console.log(c.data.feedback_response);
+  };
+  
+  //build feedback obj
+  c.buildResponse = function(){
+	return {
+		comments: c.comments || '',
+		contact_me: c.contact_me || false,
+		page: c.data.page || '',
+		score_raw: c[c.data.options.feedback_type] || '',
+		score: c.normalizeScore(c.data.options.feedback_type,c[c.data.options.feedback_type]) || 0,
+		type: c.data.options.feedback_type || '',
+		user: c.data.me
+	};
+  };
+  
+  //test func
   c.getScore = function(_type,_score){
 	console.log([_type,_score,c.normalizeScore(_type,_score)]);
   };
 
+	//cancel
+	c.cancelModal = function(){
+		$scope.$parent.$parent.$dismiss();
+
+	}
+
+	//submit
 	c.closeModal = function (){
-		
+		var response = c.buildResponse();
 		c.data.submit_state = 'submitting';
 		$timeout(function(){ 
 			
@@ -190,14 +204,14 @@
         <sys_created_by>aaron.brunet</sys_created_by>
         <sys_created_on>2024-03-02 16:31:08</sys_created_on>
         <sys_id>6c28c10887300e104c1fc99d0ebb354a</sys_id>
-        <sys_mod_count>103</sys_mod_count>
+        <sys_mod_count>110</sys_mod_count>
         <sys_name>Feedback body</sys_name>
         <sys_package display_value="Feedbacker" source="x_snc_feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_package>
         <sys_policy/>
         <sys_scope display_value="Feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_scope>
         <sys_update_name>sp_widget_6c28c10887300e104c1fc99d0ebb354a</sys_update_name>
         <sys_updated_by>aaron.brunet</sys_updated_by>
-        <sys_updated_on>2024-03-05 03:38:39</sys_updated_on>
+        <sys_updated_on>2024-03-05 03:56:17</sys_updated_on>
         <template><![CDATA[<div class="feedback-popup-container">
   <p class="feedback-popup content">Your feedback is important to us!</p>
   <p class="feedback-popup content">How was your experience on this page?</p>  
@@ -278,6 +292,7 @@
   
   <button ng-click="c.checkValues()">Check</button>
 	<div class="feedback-footer">
+      <button class="btn btn-secondary" ng-click="c.cancelModal()">Cancel</button>
 	<button class="btn btn-default btn-primary" ng-click="c.closeModal()">
       <span ng-if="!c.data.submit_state">Submit feedback <i class="fa-solid fa-arrow-right"></i></span>
       <span ng-if="c.data.submit_state == 'submitting'">Submitting <i class="fa-solid fa-spinner loading"></i></span>
