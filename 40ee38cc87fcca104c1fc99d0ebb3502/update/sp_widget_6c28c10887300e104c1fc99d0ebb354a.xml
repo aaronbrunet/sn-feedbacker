@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller=function($window) {
+        <client_script><![CDATA[api.controller=function($window,$scope,$timeout) {
   /* widget controller */
   var c = this;
-	
   c.thumbs,c.comments,c.smileys,c.stars;
   c.score = 100;
   c.contact_me = true;
@@ -55,12 +54,30 @@
 
   c.checkValues = function(){
 	console.log([c.thumbs,c.smileys,c.stars,c.comments,c.contact_me]);
+	console.log($scope);
   };
 
   c.getScore = function(_type,_score){
 	console.log([_type,_score,c.normalizeScore(_type,_score)]);
   };
 
+	c.closeModal = function (){
+		
+		c.data.submit_state = 'submitting';
+		$timeout(function(){ 
+			
+		}, 2000).then(function(){
+			c.data.submit_state = 'submitted';
+			$timeout(function(){
+				console.log('Goodbye!');
+				$scope.$parent.$parent.$dismiss();
+			},1000).then(function(){
+				
+			});
+			
+		});
+		
+	}
   c.data.page = $window.location.href;
 
   console.log([c.data.page,c.data.me]);
@@ -93,16 +110,44 @@
       opacity: 0.3;&#13;
       font-size: xxx-large;&#13;
       padding: 0 1rem;&#13;
+	  cursor: pointer;&#13;
   }&#13;
   .radio-item:checked + label,.include-star {&#13;
       opacity: 1;&#13;
+      color: initial;&#13;
+      color: $brand-primary;&#13;
+    &amp;.bad {&#13;
+    	color: $brand-danger;&#13;
+    }&#13;
+&#13;
   }&#13;
   &#13;
   textarea {&#13;
   	max-width: 100%;&#13;
   }&#13;
   &#13;
+  .feedback-footer {&#13;
+  	display: flex;&#13;
+    justify-content: flex-end;&#13;
+  }&#13;
   &#13;
+}&#13;
+&#13;
+.loading {&#13;
+   animation: spin 1s infinite linear;&#13;
+&#13;
+}&#13;
+&#13;
+@keyframes spin {&#13;
+  0% {&#13;
+  	transform: rotate(0deg);&#13;
+  }&#13;
+  50% {&#13;
+  	transform: rotate(180deg);&#13;
+  }&#13;
+  100% {&#13;
+  	transform: rotate(360deg);&#13;
+  }&#13;
 }&#13;
 &#13;
 </css>
@@ -128,7 +173,7 @@
 	} else {
 		data.options = options;
 	}
-
+	console.log(input);
 	data.smileys = [
 		{value:0,icon:'fa-face-sad-cry'},
 		{value:1,icon:'fa-face-frown'},
@@ -139,21 +184,20 @@
 
 	data.me = gs.getUserID();
 	
-
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>aaron.brunet</sys_created_by>
         <sys_created_on>2024-03-02 16:31:08</sys_created_on>
         <sys_id>6c28c10887300e104c1fc99d0ebb354a</sys_id>
-        <sys_mod_count>69</sys_mod_count>
+        <sys_mod_count>103</sys_mod_count>
         <sys_name>Feedback body</sys_name>
         <sys_package display_value="Feedbacker" source="x_snc_feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_package>
         <sys_policy/>
         <sys_scope display_value="Feedbacker">40ee38cc87fcca104c1fc99d0ebb3502</sys_scope>
         <sys_update_name>sp_widget_6c28c10887300e104c1fc99d0ebb354a</sys_update_name>
         <sys_updated_by>aaron.brunet</sys_updated_by>
-        <sys_updated_on>2024-03-03 19:39:54</sys_updated_on>
+        <sys_updated_on>2024-03-05 03:38:39</sys_updated_on>
         <template><![CDATA[<div class="feedback-popup-container">
   <p class="feedback-popup content">Your feedback is important to us!</p>
   <p class="feedback-popup content">How was your experience on this page?</p>  
@@ -161,9 +205,9 @@
   <div id="thumbs" class="feedback-section" ng-if="data.options.feedback_type == 'thumbs'">
     <div class="feedback-options">
       <input type="radio" class="radio-item" value="thumbs_down" name="thumbs" id="thumbs_down" ng-model="c.thumbs">
-          <label class="radio-label" for="thumbs_down"><i class="fa-solid fa-thumbs-down"></i></label>
+          <label class="radio-label bad" for="thumbs_down"><i class="fa-solid fa-thumbs-down"></i></label>
       <input type="radio" class="radio-item" value="thumbs_up" name="thumbs" id="thumbs_up" ng-model="c.thumbs">
-          <label class="radio-label" for="thumbs_up"><i class="fa-solid fa-thumbs-up"></i></label>
+          <label class="radio-label good" for="thumbs_up"><i class="fa-solid fa-thumbs-up"></i></label>
     </div>
     <div ng-if="c.thumbs == 'thumbs_up'">
       <p>Glad to hear it!</p>
@@ -233,7 +277,14 @@
   </div>
   
   <button ng-click="c.checkValues()">Check</button>
-  
-</div>]]></template>
+	<div class="feedback-footer">
+	<button class="btn btn-default btn-primary" ng-click="c.closeModal()">
+      <span ng-if="!c.data.submit_state">Submit feedback <i class="fa-solid fa-arrow-right"></i></span>
+      <span ng-if="c.data.submit_state == 'submitting'">Submitting <i class="fa-solid fa-spinner loading"></i></span>
+      <span ng-if="c.data.submit_state == 'submitted'">Submitted <i class="fa-solid fa-check"></i></span>
+  </button>
+</div>  
+</div>
+]]></template>
     </sp_widget>
 </record_update>
